@@ -76,3 +76,14 @@ prevBtn.addEventListener('click', function(){
   showPerson(currentItem);
   console.log(currentItem);
 })
+
+// show random person
+randomBtn.addEventListener('click', function() {
+  /* let random = Math.floor(Math.random() * reviews.length);
+  showPerson(random);
+  console.log(random); */
+  currentItem = Math.floor(Math.random() * reviews.length);
+  showPerson(currentItem);
+  console.log(currentItem);
+})
+
