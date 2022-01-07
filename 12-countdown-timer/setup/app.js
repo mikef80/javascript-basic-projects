@@ -26,8 +26,71 @@ const giveaway = document.querySelector('.giveaway');
 const deadline = document.querySelector('.deadline');
 const items = document.querySelectorAll('.deadline-format h4');
 
-let futureDate = new Date(2022,3,25,8,0);
+let tempDate = new Date();
+let tempYear = tempDate.getFullYear();
+let tempMonth = tempDate.getMonth();
+let tempDay = tempDate.getDate();
+
+// let futureDate = new Date(2022,0,7,22,11,0);
+
+// always sets future date to be in the future for demo purposes.  Otherwise use line above
+let futureDate = new Date(tempYear,tempMonth,tempDay + 10,8,0,0);
+
 
 const year = futureDate.getFullYear();
+const month = months[futureDate.getMonth()];
+const date = futureDate.getDate();
+const hours = futureDate.getHours();
+let minutes = futureDate.getMinutes();
+// add preceding 0 to single digit minutes
+if (minutes < 10) {
+  minutes = `0${minutes}`;
+}
 
-giveaway.textContent = `giveaway end on ${year}`;
+const day = weekdays[futureDate.getDay()];
+
+giveaway.textContent = `giveaway end on ${day}, ${date} ${month} ${year}, ${hours}:${minutes}am`;
+
+// future time in ms
+const futureTime = futureDate.getTime();
+
+const getRemainingTime = () => {
+  const today = new Date().getTime();
+  const t = futureTime - today;
+  
+  // values in ms
+  const oneDay = 24 * 60 * 60 * 1000;
+  const oneHour = 60 * 60 * 1000;
+  const oneMinute = 60 * 1000;
+  const oneSecond  = 1000;
+
+  // calculate all values
+  let days = Math.floor(t / oneDay);
+  let hours = Math.floor((t % oneDay) / oneHour);
+  let minutes = Math.floor((t % oneHour) / oneMinute);
+  let seconds = Math.floor((t % oneMinute) / oneSecond);
+
+  // set values array
+  const values = [days,hours,minutes,seconds];
+
+  const format = item => {
+    if (item < 10) {
+      item = `0${item}`;
+    }
+    return item;
+  }
+
+  items.forEach((item,index) => {
+    item.innerHTML = format(values[index]);
+  })
+  
+  if (t < 0) {
+    clearInterval(countdown);
+    deadline.innerHTML = `<h4 class="expired">sorry, this giveaway has ended</h4>`
+  }
+}
+
+// countdown
+let countdown = setInterval(getRemainingTime, 1000);
+// getRemainingTime();
+
