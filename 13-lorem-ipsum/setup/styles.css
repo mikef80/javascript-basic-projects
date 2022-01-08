@@ -209,6 +209,9 @@ input {
   margin: 0 0.5rem;
   font-size: 1.25rem;
 }
+::placeholder {
+  opacity: 0.4;
+}
 button {
   background: var(--clr-primary-10);
 }
