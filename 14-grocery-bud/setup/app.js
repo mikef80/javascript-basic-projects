@@ -39,8 +39,15 @@ const addItem = e => {
                                 <i class="fas fa-trash"></i>
                             </button>
                             </div>`;
+
+        const deleteBtn = element.querySelector('.delete-btn');
+        const editBtn = element.querySelector('.edit-btn');
+
+        deleteBtn.addEventListener('click', deleteItem);
+        editBtn.addEventListener('click', editItem);
+        
         // append child
-        List.appendChild(element)
+        list.appendChild(element);
 
         // display alert
         displayAlert('item added to the list', 'success');
@@ -53,7 +60,11 @@ const addItem = e => {
         setBackToDefault();
 
     } else if (value && editFlag) {
-        console.log('editing');
+        editElement.innerHTML = value;
+        displayAlert('value changed', 'success');
+        // edit local storage
+        editLocalStorage(editID,value);
+        setBackToDefault();
     } else {
         displayAlert('please enter value', 'danger')
     }
@@ -81,6 +92,8 @@ const setBackToDefault = () => {
     submitBtn.textContent = 'submit';
 }
 
+// clear items
+
 const clearItems = () => {
     const items = document.querySelectorAll('.grocery-item');
 
@@ -88,14 +101,89 @@ const clearItems = () => {
         items.forEach(item => {
             list.removeChild(item);
         })
+        console.log('list cleared');
     }
+    container.classList.remove('show-container');
+    displayAlert('empty list', 'danger');
+    setBackToDefault();
+    // localStorage.removeItem('list');
+}
+
+// delete item
+
+const deleteItem = (e) => {
+    // console.log('item deleted');
+    const element = e.currentTarget.parentElement.parentElement;
+    const id = element.dataset.id;
+    list.removeChild(element);
+    if (list.children.length === 0) {
+        container.classList.remove('show-container');
+    }
+    displayAlert('item removed', 'danger');
+    setBackToDefault();
+    // remove from local storage
+    removeFromLocalStorage(id);
+}
+
+// edit item
+
+const editItem = (e) => {
+    const element = e.currentTarget.parentElement.parentElement;
+    // set edit item
+    editElement = e.currentTarget.parentElement.previousElementSibling;
+    // set form value
+    grocery.value = editElement.innerHTML;
+    editFlag = true;
+    editID = element.dataset.id;
+    submitBtn.textContent = 'edit';
 }
 
 // ****** LOCAL STORAGE **********
 
 const addToLocalStorage = (id,value) => {
-    console.log('added to local storage');
+    // console.log('added to local storage');
+    const grocery = {id,value};
+    let items = getLocalStorage();
+
+    // console.log(items);
+    items.push(grocery);
+    localStorage.setItem('list',JSON.stringify(items));
+    // console.log(items);
 }
+
+const removeFromLocalStorage = id => {
+    
+}
+
+const editLocalStorage = (id,value) => {
+
+}
+
+const getLocalStorage = () => {
+    return localStorage.getItem('list') ? JSON.parse(localStorage.getItem('list')) : [];
+}
+
+// localStorage API
+// setItem
+// getItem
+// removeItem
+// save as strings
+// localStorage.setItem('orange',JSON.stringify(['item','item2']));
+// const oranges = JSON.parse(localStorage.getItem('orange'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ****** SETUP ITEMS **********
 
